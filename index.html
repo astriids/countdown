@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Ops 6 Countdown</title>
+    <style>
+        /* Set the background image and dim effect */
+        body {
+            background: url('https://images4.alphacoders.com/137/1376461.jpg') no-repeat center center fixed; /* Replace with your image URL */
+            background-size: cover; /* Cover the entire background */
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            height: 100vh; /* Full height */
+            display: flex; /* Flexbox for centering */
+            flex-direction: column; /* Vertical alignment */
+            justify-content: center; /* Center vertically */
+            position: relative; /* Position for absolute overlay */
+            overflow: hidden; /* Hide overflow */
+        }
+
+        /* Dim background overlay */
+        .dim-overlay {
+            position: absolute; /* Absolute positioning */
+            top: 0; /* Cover top */
+            left: 0; /* Cover left */
+            width: 115%; /* Full width */
+            height: 115%; /* Full height */
+            background-color: rgba(0, 0, 0, 0.6); /* Black with transparency */
+            z-index: 1; /* Place it under the text */
+        }
+
+        h1 {
+            font-size: 36px;
+            text-shadow: 0 0 10px rgb(255, 115, 0); /* Orange glow for title */
+            margin-bottom: 20px;
+            z-index: 2; /* Above the overlay */
+        }
+
+        #timers-container {
+            display: flex;
+            flex-direction: column; /* Arrange timers vertically */
+            align-items: center; /* Center align timers */
+            gap: 20px; /* Space between timers */
+            z-index: 2; /* Above the overlay */
+        }
+
+        .timer {
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent orange */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); /* Glowing effect */
+            transition: box-shadow 0.3s, transform 0.3s; /* Transition for effects */
+            width: 250px; /* Fixed width for consistency */
+        }
+
+        .timer:hover {
+            box-shadow: 0 0 25px rgb(255, 115, 0); /* Brighten on hover */
+            transform: translateY(-5px); /* Slight lift on hover */
+        }
+
+        strong {
+            font-size: 24px; /* Larger font for zone names */
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .countdown {
+            font-size: 20px; /* Larger font for countdown */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body onload="init()">
+    <div class="dim-overlay"></div> <!-- Dim overlay -->
+
+    <h1>Black Ops 6 Countdown</h1>
+    <div id="timers-container"></div>
+
+    <script>
+        // Target release times for Black Ops 6
+        const targetTimes = {
+            "Pacific Time (PT)": new Date('2024-10-24T21:00:00-08:00'), // 9 PM PT
+            "Mountain Time (MT)": new Date('2024-10-24T22:00:00-07:00'), // 10 PM MT
+            "Central Time (CT)": new Date('2024-10-24T23:00:00-06:00'), // 11 PM CT
+            "Eastern Time (ET)": new Date('2024-10-25T00:00:00-05:00'), // 12 AM ET
+        };
+
+        // Initialize timers on page load
+        function init() {
+            for (const [zone, targetDate] of Object.entries(targetTimes)) {
+                createTimer(zone, targetDate);
+            }
+        }
+
+        function createTimer(zoneName, targetDate) {
+            const timerDiv = document.createElement('div');
+            timerDiv.className = 'timer';
+            timerDiv.id = zoneName.replace(/\s+/g, '-').toLowerCase(); // Format ID
+            timerDiv.innerHTML = `<strong>${zoneName}</strong><span id="${timerDiv.id}-time" class="countdown">Loading...</span>`;
+            document.getElementById('timers-container').appendChild(timerDiv);
+
+            startCountdown(targetDate, `${timerDiv.id}-time`);
+        }
+
+        function startCountdown(targetDate, elementId) {
+            const countdownElement = document.getElementById(elementId);
+            
+            const interval = setInterval(() => {
+                const now = new Date();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    countdownElement.innerHTML = "Countdown Finished!";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
